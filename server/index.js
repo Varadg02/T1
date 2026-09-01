@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // ── Serve Vite Production Build (dist) ────────────────────────────
-const distPath = path.join(process.cwd(), 'dist');
+const distPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(distPath));
 
 // ── Engines ──────────────────────────────────────────────────────
@@ -348,9 +348,7 @@ app.post('/api/reset-account', (req, res) => {
 
 // ── Catch-All SPA Fallback to index.html ──────────────────────────
 app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
-    res.sendFile(path.join(distPath, 'index.html'));
-  }
+  res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(PORT, () => {
