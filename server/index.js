@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 import { NewsScanner }          from './newsScanner.js';
 import { StrategyEngine }       from './strategyEngine.js';
 import { AgentEvolutionEngine } from './agentEvolution.js';
@@ -14,6 +15,10 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+
+// ── Serve Vite Production Build (dist) ────────────────────────────
+const distPath = path.join(process.cwd(), 'dist');
+app.use(express.static(distPath));
 
 // ── Engines ──────────────────────────────────────────────────────
 const newsScanner     = new NewsScanner();
@@ -339,6 +344,13 @@ app.post('/api/reset-account', (req, res) => {
   const { balance } = req.body;
   paperEngine.resetAccount(balance || 5.00);
   res.json({ success: true });
+});
+
+// ── Catch-All SPA Fallback to index.html ──────────────────────────
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(distPath, 'index.html'));
+  }
 });
 
 app.listen(PORT, () => {
