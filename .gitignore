@@ -2,10 +2,6 @@
 node_modules/
 .pnpm-store/
 
-# Production build
-dist/
-build/
-
 # Logs & Environment
 *.log
 npm-debug.log*
